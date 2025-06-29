@@ -1,5 +1,6 @@
 package com.aston.frontendpracticeservice.unit.service;
 
+import com.aston.frontendpracticeservice.domain.entity.Requisites;
 import com.aston.frontendpracticeservice.domain.entity.User;
 import com.aston.frontendpracticeservice.dto.user.UserRequest;
 import com.aston.frontendpracticeservice.dto.user.UserResponse;
@@ -22,11 +23,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.aston.frontendpracticeservice.utils.TestConst.USER_ID;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.USER_ID;
+import static com.aston.frontendpracticeservice.utils.constants.ValueNotExistDb.USER_ID_NOT_EXIST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -36,11 +39,14 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
-    static UUID id;
+    static UUID idExist;
+
+    static UUID idNotExist;
 
     @BeforeAll
     static void setUp() {
-        id = UUID.fromString(USER_ID);
+        idExist = UUID.fromString(USER_ID);
+        idNotExist = UUID.fromString(USER_ID_NOT_EXIST);
     }
 
     @Mock
@@ -52,7 +58,9 @@ public class UserServiceTest {
     @InjectMocks
     private UserServiceImpl userService;
 
-    private User user;
+    private User userExist;
+
+    private User userNotExist;
 
     private UserResponse userResponse;
 
@@ -60,18 +68,19 @@ public class UserServiceTest {
 
     @BeforeEach
     void createDataForTest() {
-        user = TestDataFactory.getUser();
+        userExist = TestDataFactory.getUser(true);
+        userNotExist = TestDataFactory.getUser(false);
         userResponse = TestDataFactory.getUserResponse();
-        userRequest = TestDataFactory.getUserRequest();
+        userRequest = TestDataFactory.getUserRequest(false);
     }
 
     @Test
     @DisplayName("Get all users should return list with userResponses")
     void getAllUsers_ShouldReturnAllUsers() {
         var users = List.of(
-                TestDataFactory.getUser(),
-                TestDataFactory.getUser(),
-                TestDataFactory.getUser()
+                TestDataFactory.getUser(true),
+                TestDataFactory.getUser(true),
+                TestDataFactory.getUser(true)
         );
         var responseList = List.of(
                 TestDataFactory.getUserResponse(),
@@ -103,28 +112,28 @@ public class UserServiceTest {
     @Test
     @DisplayName("Get user should return userResponse")
     void getById_ShouldReturnUser() {
-        when(userRepository.findById(id))
-                .thenReturn(Optional.of(user));
-        when(userMapper.toUserResponse(user)).thenReturn(userResponse);
-        var result = userService.getById(id);
+        when(userRepository.findById(idExist))
+                .thenReturn(Optional.of(userExist));
+        when(userMapper.toUserResponse(userExist)).thenReturn(userResponse);
+        var result = userService.getById(idExist);
 
         assertThat(result).isEqualTo(userResponse);
         verify(userRepository, times(1))
-                .findById(id);
+                .findById(idExist);
         verify(userMapper, times(1))
-                .toUserResponse(user);
+                .toUserResponse(userExist);
     }
 
     @Test
     @DisplayName("Get user should throw UserNotFoundException")
     void getById_ShouldThrowUserNotFoundException() {
-        when(userRepository.findById(id))
+        when(userRepository.findById(idNotExist))
                 .thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class,
-                () -> userService.getById(id));
+                () -> userService.getById(idNotExist));
         verify(userRepository, times(1))
-                .findById(id);
+                .findById(idNotExist);
         verify(userMapper, never())
                 .toUserResponse(any(User.class));
     }
@@ -132,6 +141,12 @@ public class UserServiceTest {
     @Test
     @DisplayName("Create a new User should create a new User")
     void createNewUser_ShouldCreateNewUser() {
+        doAnswer(invocation -> {
+            User user = invocation.getArgument(1);
+            user.setRequisites(new Requisites());
+            return null;
+        }).when(userMapper).toUser(any(UserRequest.class), any(User.class));
+
         userService.createNewUser(userRequest);
 
         verify(userMapper, times(1))
@@ -143,23 +158,23 @@ public class UserServiceTest {
     @Test
     @DisplayName("Update a User should return the updated User")
     void updateUser_ShouldReturnUser() {
-        when(userRepository.findById(id))
-                .thenReturn(Optional.of(user));
-        doNothing().when(userMapper).toUser(userRequest, user);
-        userService.updateUser(id, userRequest);
+        when(userRepository.findById(idExist))
+                .thenReturn(Optional.of(userExist));
+        doNothing().when(userMapper).toUser(userRequest, userExist);
+        userService.updateUser(idExist, userRequest);
 
-        verify(userRepository).findById(id);
-        verify(userMapper).toUser(userRequest, user);
+        verify(userRepository).findById(idExist);
+        verify(userMapper).toUser(userRequest, userExist);
     }
 
     @Test
     @DisplayName("Update a User When User not exists throws exception")
     void updateUser_ShouldThrowUserNotFoundException() {
-        when(userRepository.findById(id)).thenReturn(Optional.empty());
+        when(userRepository.findById(idExist)).thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class,
-                () -> userService.updateUser(id, any(UserRequest.class)));
-        verify(userRepository).findById(id);
+                () -> userService.updateUser(idExist, any(UserRequest.class)));
+        verify(userRepository).findById(idExist);
         verify(userMapper, never()).toUser(any(UserRequest.class), any());
     }
 
@@ -167,7 +182,7 @@ public class UserServiceTest {
     @DisplayName("Delete user by ID should expect success deletion")
     void deleteById_ShouldDeleteUser() {
         doNothing().when(userRepository).deleteById(any(UUID.class));
-        userService.deleteById(id);
+        userService.deleteById(idExist);
         verify(userRepository, times(1))
                 .deleteById(any(UUID.class));
     }

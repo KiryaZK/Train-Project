@@ -1,7 +1,9 @@
 package com.aston.frontendpracticeservice.repository;
 
 import com.aston.frontendpracticeservice.domain.entity.User;
+import com.aston.frontendpracticeservice.dto.projection.UserAccountDetailsView;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -20,4 +22,13 @@ public interface UserRepository extends JpaRepository<User, UUID> {
      */
     Optional<User> findByLogin(String login);
 
+    /**
+     * Поиск имени, расчетного счета и кбк пользователя по его ID
+     * @param id - UUID пользователя
+     * @return Проекция с именем, расчетным счетом и кбк пользователя
+     */
+    @Query("SELECT u.firstname firstname, r.accountNumber accountNumber, r.kbk kbk  " +
+            "FROM User u JOIN u.requisites r " +
+            "WHERE u.id = :id")
+    Optional<UserAccountDetailsView> findUserView(UUID id);
 }

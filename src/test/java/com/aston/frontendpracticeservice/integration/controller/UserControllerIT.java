@@ -13,14 +13,18 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
-import static com.aston.frontendpracticeservice.utils.TestConst.DELETE_USER_BY_ID;
-import static com.aston.frontendpracticeservice.utils.TestConst.GET_ALL_USERS_URL;
-import static com.aston.frontendpracticeservice.utils.TestConst.GET_USER_BY_ID;
-import static com.aston.frontendpracticeservice.utils.TestConst.INCORRECT_USER_ID;
-import static com.aston.frontendpracticeservice.utils.TestConst.POST_CREATE_NEW_USER_URL;
-import static com.aston.frontendpracticeservice.utils.TestConst.PUT_UPDATE_USER_URL;
-import static com.aston.frontendpracticeservice.utils.TestConst.USER_ID;
-import static com.aston.frontendpracticeservice.utils.TestConst.USER_NOT_FOUND;
+import static com.aston.frontendpracticeservice.utils.constants.ExceptionMessage.USER_NOT_FOUND_MESSAGE;
+import static com.aston.frontendpracticeservice.utils.constants.UrlDescription.DELETE_USER_BY_ID;
+import static com.aston.frontendpracticeservice.utils.constants.UrlDescription.GET_ALL_USERS_URL;
+import static com.aston.frontendpracticeservice.utils.constants.UrlDescription.GET_USER_BY_ID;
+import static com.aston.frontendpracticeservice.utils.constants.UrlDescription.GET_USER_VIEW_URL;
+import static com.aston.frontendpracticeservice.utils.constants.UrlDescription.POST_CREATE_NEW_USER_URL;
+import static com.aston.frontendpracticeservice.utils.constants.UrlDescription.PUT_UPDATE_USER_URL;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.ACCOUNT_NUMBER;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.FIRST_NAME;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.KBK;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.USER_ID;
+import static com.aston.frontendpracticeservice.utils.constants.ValueNotExistDb.USER_ID_NOT_EXIST;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -71,20 +75,20 @@ class UserControllerIT extends IntegrationTestBase {
     @Test
     @DisplayName("GET /users/{id} - When User exist by ID - expect UserNotFoundException")
     void getUserById_ShouldThrowException() throws Exception {
-        var request = get(GET_USER_BY_ID, INCORRECT_USER_ID);
+        var request = get(GET_USER_BY_ID, USER_ID_NOT_EXIST);
 
         mvc.perform(request)
                 .andExpectAll(
                         status().isNotFound(),
                         content().contentType(MediaType.APPLICATION_JSON),
-                        jsonPath("$.message").value(USER_NOT_FOUND)
+                        jsonPath("$.message").value(USER_NOT_FOUND_MESSAGE)
                 );
     }
 
     @Test
     @DisplayName("POST /users - When input data is valid - expect success")
     void createNewUser_ShouldReturnSuccess() throws Exception {
-        var userRequest = TestDataFactory.getUserRequest();
+        var userRequest = TestDataFactory.getUserRequest(false);
         var request = post(POST_CREATE_NEW_USER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRequest));
@@ -95,12 +99,12 @@ class UserControllerIT extends IntegrationTestBase {
     @Test
     @DisplayName("PUT /users/{id} - When input data is valid - expect updated User")
     void updateUser_ShouldReturnSuccess() throws Exception {
-        var userRequest = TestDataFactory.getUserRequest();
+        var userRequest = TestDataFactory.getUserRequest(true);
         var request = put(PUT_UPDATE_USER_URL, USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRequest));
 
-        mvc.perform(request).andExpect(status().isOk());
+        mvc.perform(request).andExpect(status().isNoContent());
     }
 
     @Test
@@ -108,13 +112,52 @@ class UserControllerIT extends IntegrationTestBase {
     void deleteUserById_ShouldDeleteUser() throws Exception {
         var request = delete(DELETE_USER_BY_ID, USER_ID);
 
-        mvc.perform(request).andExpect(status().isOk());
+        mvc.perform(request).andExpect(status().isNoContent());
     }
 
     @Test
     @DisplayName("DELETE /users/{id} - When user's id is invalid - expect exception")
     void deleteUserById_ShouldThrowException() throws Exception {
         var request = delete(DELETE_USER_BY_ID, "fail");
+
+        mvc.perform(request).andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @DisplayName("GET /users/{id}/account-details - When user's id is valid - expect success")
+    void getUserViewById_ShouldReturnUserView() throws Exception {
+        var request = get(GET_USER_VIEW_URL, USER_ID)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request)
+                .andExpectAll(
+                        status().isOk(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        jsonPath("$.firstname").value(FIRST_NAME),
+                        jsonPath("$.accountNumber").value(ACCOUNT_NUMBER),
+                        jsonPath("$.kbk").value(KBK)
+                );
+    }
+
+    @Test
+    @DisplayName("GET /users/{id}/account-details - When user's id doesn't exist - expect exception")
+    void getUserViewById_ShouldThrowUserNotFoundException() throws Exception {
+        var request = get(GET_USER_VIEW_URL, USER_ID_NOT_EXIST)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request)
+                .andExpectAll(
+                        status().isNotFound(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        jsonPath("$.message").value(USER_NOT_FOUND_MESSAGE)
+                );
+    }
+
+    @Test
+    @DisplayName("GET /users/{id}/view - When user's id is invalid - expect exception")
+    void getUserViewById_ShouldThrowException() throws Exception {
+        var request = get(GET_USER_VIEW_URL, "fail")
+                .contentType(MediaType.APPLICATION_JSON);
 
         mvc.perform(request).andExpect(status().is4xxClientError());
     }

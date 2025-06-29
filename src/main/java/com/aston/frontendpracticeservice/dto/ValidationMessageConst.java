@@ -11,6 +11,7 @@ public final class ValidationMessageConst {
     public static final String PASSPORT_SIZE_MESSAGE = "Серия и номер паспорта состоят из 10 цифр";
     public static final String INN_SIZE_MESSAGE = "ИНН состоит из 12 цифр";
     public static final String SNILS_SIZE_MESSAGE = "Длина снилс - 11 цифр";
+    public static final String NULL_OR_SIZE_MESSAGE = "Допустимое значение: null или равная {max} строка";
 
     private ValidationMessageConst() {}
 }

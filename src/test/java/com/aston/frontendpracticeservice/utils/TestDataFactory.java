@@ -1,52 +1,92 @@
 package com.aston.frontendpracticeservice.utils;
 
+import com.aston.frontendpracticeservice.domain.entity.Requisites;
 import com.aston.frontendpracticeservice.domain.entity.User;
+import com.aston.frontendpracticeservice.dto.projection.UserAccountDetailsView;
+import com.aston.frontendpracticeservice.dto.requisites.RequisitesDTO;
 import com.aston.frontendpracticeservice.dto.user.UserRequest;
 import com.aston.frontendpracticeservice.dto.user.UserResponse;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-import static com.aston.frontendpracticeservice.utils.TestConst.BIRTH_DATE;
-import static com.aston.frontendpracticeservice.utils.TestConst.FIRST_NAME;
-import static com.aston.frontendpracticeservice.utils.TestConst.LAST_NAME;
-import static com.aston.frontendpracticeservice.utils.TestConst.LOGIN;
-import static com.aston.frontendpracticeservice.utils.TestConst.NUMBER_INN;
-import static com.aston.frontendpracticeservice.utils.TestConst.PASSPORT_NUMBER;
-import static com.aston.frontendpracticeservice.utils.TestConst.PASSWORD;
-import static com.aston.frontendpracticeservice.utils.TestConst.ROLES;
-import static com.aston.frontendpracticeservice.utils.TestConst.SNILS;
-import static com.aston.frontendpracticeservice.utils.TestConst.USER_ID;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.ACCOUNT_NUMBER;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.BIC;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.BIRTH_DATE;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.CORRESPONDENT_ACCOUNT;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.FIRST_NAME;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.KBK;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.KPP;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.LAST_NAME;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.LOGIN;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.NUMBER_INN;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.PASSPORT_NUMBER;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.PASSWORD;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.ROLES;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.SNILS;
+import static com.aston.frontendpracticeservice.utils.constants.ValueExistDb.USER_ID;
+import static com.aston.frontendpracticeservice.utils.constants.ValueNotExistDb.ACCOUNT_NUMBER_NOT_EXIST;
+import static com.aston.frontendpracticeservice.utils.constants.ValueNotExistDb.LOGIN_NOT_EXIST;
+import static com.aston.frontendpracticeservice.utils.constants.ValueNotExistDb.NUMBER_INN_NOT_EXIST;
+import static com.aston.frontendpracticeservice.utils.constants.ValueNotExistDb.PASSPORT_NUMBER_NOT_EXIST;
+import static com.aston.frontendpracticeservice.utils.constants.ValueNotExistDb.PASSWORD_NOT_EXIST;
+import static com.aston.frontendpracticeservice.utils.constants.ValueNotExistDb.SNILS_NOT_EXIST;
+import static com.aston.frontendpracticeservice.utils.constants.ValueNotExistDb.USER_ID_NOT_EXIST;
 
 public final class TestDataFactory {
 
     private TestDataFactory() {}
 
-    public static User getUser() {
-        return User.builder()
-                .id(UUID.fromString(USER_ID))
+    public static User getUser(boolean isExists) {
+        var user = User.builder()
+                .id(UUID.fromString(isExists ? USER_ID : USER_ID_NOT_EXIST))
                 .firstname(FIRST_NAME)
                 .lastname(LAST_NAME)
                 .birthDate(LocalDate.parse(BIRTH_DATE))
-                .numberInn(NUMBER_INN)
-                .snils(SNILS)
-                .passportNumber(PASSPORT_NUMBER)
+                .snils(isExists ? SNILS : SNILS_NOT_EXIST)
+                .passportNumber(PASSPORT_NUMBER_NOT_EXIST)
                 .roles(ROLES)
-                .login(LOGIN)
-                .password(PasswordEncoderUtil.encodePassword(PASSWORD))
+                .login(isExists ? LOGIN : LOGIN_NOT_EXIST)
+                .password(PasswordEncoderUtil
+                        .encodePassword(isExists ? PASSWORD : PASSWORD_NOT_EXIST))
+                .build();
+
+        user.setRequisites(getRequisites(user, isExists));
+
+        return user;
+    }
+
+    public static Requisites getRequisites(User user, boolean isExists) {
+        return Requisites.builder()
+                .id(user.getId())
+                .user(user)
+                .accountNumber(isExists ? ACCOUNT_NUMBER : ACCOUNT_NUMBER_NOT_EXIST)
+                .bic(BIC)
+                .correspondentAccount(CORRESPONDENT_ACCOUNT)
+                .numberInn(isExists ? NUMBER_INN : NUMBER_INN_NOT_EXIST)
+                .kpp(KPP)
+                .kbk(KBK)
                 .build();
     }
 
-    public static UserRequest getUserRequest() {
+    public static UserRequest getUserRequest(boolean isExists) {
         return new UserRequest(
                 FIRST_NAME,
                 LAST_NAME,
                 LocalDate.parse(BIRTH_DATE),
-                NUMBER_INN,
-                SNILS,
-                PASSPORT_NUMBER,
-                LOGIN,
-                PASSWORD
+                isExists ? SNILS : SNILS_NOT_EXIST,
+                isExists ? PASSPORT_NUMBER : PASSPORT_NUMBER_NOT_EXIST,
+                isExists ? LOGIN : LOGIN_NOT_EXIST,
+                isExists ? PASSWORD : PASSWORD_NOT_EXIST,
+                getRequisitesDTO(isExists)
+        );
+    }
+
+    public static RequisitesDTO getRequisitesDTO(boolean isExists) {
+        return new RequisitesDTO(
+                isExists ? ACCOUNT_NUMBER : ACCOUNT_NUMBER_NOT_EXIST,
+                isExists ? NUMBER_INN : NUMBER_INN_NOT_EXIST,
+                KBK
         );
     }
 
@@ -55,11 +95,9 @@ public final class TestDataFactory {
                 FIRST_NAME,
                 LAST_NAME,
                 LocalDate.parse(BIRTH_DATE),
-                NUMBER_INN,
                 SNILS,
                 PASSPORT_NUMBER,
                 ROLES
         );
     }
-
 }

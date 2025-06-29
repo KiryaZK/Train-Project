@@ -9,7 +9,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 @IT
 @Sql({
-    "classpath:sql/data.sql"
+        "classpath:sql/mock_data_users_and_roles.sql",
+        "classpath:sql/mock_data_requisites.sql"
 })
 public abstract class IntegrationTestBase {
 
