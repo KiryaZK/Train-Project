@@ -1,19 +1,57 @@
 package com.aston.frontendpracticeservice.service;
 
 import com.aston.frontendpracticeservice.domain.entity.User;
+import com.aston.frontendpracticeservice.dto.user.UserRequest;
+import com.aston.frontendpracticeservice.dto.user.UserResponse;
 import com.aston.frontendpracticeservice.exception.UserNotFoundException;
-import com.aston.frontendpracticeservice.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
-@RequiredArgsConstructor
-public class UserService {
+import java.util.List;
+import java.util.UUID;
 
-    private final UserRepository userRepository;
+/**
+ * Сервис для работы с пользователями
+ */
+public interface UserService {
+    /**
+     * Метод для получения всех пользователей
+     * @return список DTO всех пользователей
+     * @throws UserNotFoundException если пользователи не найдены
+     */
+    List<UserResponse> getAllUsers();
 
-    public User findByLogin(String login) {
-        return userRepository.findByLogin(login)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-    }
+    /**
+     * Метод для получения пользователя
+     * @param id - UUID пользователя
+     * @return DTO с информацией о пользователе
+     * @throws UserNotFoundException если пользователь не найден по id
+     */
+    UserResponse getById(UUID id);
+
+    /**
+     * Метод для получения пользователя по логину
+     * @param login - логин пользователя
+     * @return DTO с информацией о пользователе
+     * @throws UserNotFoundException если пользователь не найден по логину
+     */
+    User getByLogin(String login);
+
+    /**
+     * Метод для создания нового пользователя
+     * @param userDTO - DTO с данными нового пользователя
+     */
+    void createNewUser(UserRequest userDTO);
+
+    /**
+     * Метод для обновления данных существующего пользователя
+     * @param id - UUID пользователя
+     * @param userDTO - DTO с новыми данными пользователя
+     * @throws UserNotFoundException если пользователь не найден по id
+     */
+    void updateUser(UUID id, UserRequest userDTO);
+
+    /**
+     * Метод для удаления пользователя по его ID
+     * @param id - UUID пользователя
+     */
+    void deleteById(UUID id);
 }

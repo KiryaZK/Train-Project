@@ -1,4 +1,4 @@
-package com.aston.frontendpracticeservice.service;
+package com.aston.frontendpracticeservice.service.implementation;
 
 import com.aston.frontendpracticeservice.domain.entity.User;
 import com.aston.frontendpracticeservice.security.JwtAuthentication;
