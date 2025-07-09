@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: puppet-lab
+  config:
+    import: optional:file:./env/.env[.properties]
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/puppet_db}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:pass123}
+  jpa:
+    properties.hibernate:
+      show_sql: true
+      format_sql: true
+      hbm2ddl.auto: validate
+    open-in-view: false
+
+
+jwt.secret: ${MY_JWT}
+
+auth.default_login: admin
+auth.default_password: admin
+
+auth.refresh_token_life_seconds: 60
+auth.access_token_life_seconds: 1
+
+server:
+  port: 8080

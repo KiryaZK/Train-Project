@@ -1,9 +1,10 @@
-package com.aston.frontendpracticeservice.service;
+package com.aston.frontendpracticeservice.service.implementation;
 
 import com.aston.frontendpracticeservice.domain.entity.User;
 import com.aston.frontendpracticeservice.domain.request.AuthRequest;
 import com.aston.frontendpracticeservice.domain.response.JwtResponse;
 import com.aston.frontendpracticeservice.exception.AuthException;
+import com.aston.frontendpracticeservice.service.UserService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class AuthService {
     private final Map<String, String> refreshStorage = new ConcurrentHashMap<>();
 
     public JwtResponse authAndGetToken(AuthRequest authRequest) {
-        final User user = userService.findByLogin(authRequest.login());
+        final User user = userService.getByLogin(authRequest.login());
 
         if (!user.getPassword().equals(authRequest.password())) {
             throw new AuthException("Incorrect password");
@@ -46,7 +47,7 @@ public class AuthService {
             final String login = claims.getSubject();
             final String saveRefreshToken = refreshStorage.get(login);
             if (saveRefreshToken != null && saveRefreshToken.equals(refreshToken)) {
-                final User user = userService.findByLogin(login);
+                final User user = userService.getByLogin(login);
                 final String accessToken = jwtService.generateAccessToken(user);
                 return new JwtResponse(accessToken, jwtService.generateRefreshToken(user));
             }

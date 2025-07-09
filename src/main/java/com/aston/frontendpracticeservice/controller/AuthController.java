@@ -4,7 +4,7 @@ import com.aston.frontendpracticeservice.domain.request.AuthRequest;
 import com.aston.frontendpracticeservice.domain.request.RefreshJwtRequest;
 import com.aston.frontendpracticeservice.domain.response.JwtResponse;
 import com.aston.frontendpracticeservice.domain.response.SimpleMessage;
-import com.aston.frontendpracticeservice.service.AuthService;
+import com.aston.frontendpracticeservice.service.implementation.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

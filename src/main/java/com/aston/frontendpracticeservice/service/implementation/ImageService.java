@@ -1,4 +1,4 @@
-package com.aston.frontendpracticeservice.service;
+package com.aston.frontendpracticeservice.service.implementation;
 
 import com.aston.frontendpracticeservice.domain.response.SimpleMessage;
 import lombok.extern.slf4j.Slf4j;

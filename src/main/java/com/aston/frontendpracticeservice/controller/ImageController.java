@@ -1,7 +1,7 @@
 package com.aston.frontendpracticeservice.controller;
 
 import com.aston.frontendpracticeservice.domain.response.SimpleMessage;
-import com.aston.frontendpracticeservice.service.ImageService;
+import com.aston.frontendpracticeservice.service.implementation.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
