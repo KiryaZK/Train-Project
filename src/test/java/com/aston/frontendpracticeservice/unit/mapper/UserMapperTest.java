@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserMapperTest {
@@ -24,7 +25,7 @@ public class UserMapperTest {
     @Test
     @DisplayName("Convert User to UserResponse")
     void toUserResponse_ShouldReturnValidUserResponse() {
-        var user = TestDataFactory.getUser();
+        var user = TestDataFactory.getUser(true);
         var userResponse = userMapper.toUserResponse(user);
 
         assertAll(
@@ -38,9 +39,6 @@ public class UserMapperTest {
 
                 () -> assertThat(userResponse.birthDate())
                         .isEqualTo(user.getBirthDate()),
-
-                () -> assertThat(userResponse.numberInn())
-                        .isEqualTo(user.getNumberInn()),
 
                 () -> assertThat(userResponse.snils())
                         .isEqualTo(user.getSnils()),
@@ -57,7 +55,7 @@ public class UserMapperTest {
     @DisplayName("Convert list of User to list of UserResponse")
     void toUserResponseList_ShouldReturnValidUserResponseList() {
         var users = new ArrayList<User>() {{
-            add(TestDataFactory.getUser());
+            add(TestDataFactory.getUser(true));
         }};
         var userResponseList = userMapper.toUserResponseList(users);
 
@@ -71,7 +69,7 @@ public class UserMapperTest {
     @Test
     @DisplayName("Convert UserRequest to User")
     void toUser_ShouldReturnValidUser() {
-        var userRequest = TestDataFactory.getUserRequest();
+        var userRequest = TestDataFactory.getUserRequest(false);
         User user = new User();
         user.addRole();
 
@@ -87,9 +85,6 @@ public class UserMapperTest {
                 () -> assertThat(user.getBirthDate())
                         .isEqualTo(userRequest.birthDate()),
 
-                () -> assertThat(user.getNumberInn())
-                        .isEqualTo(userRequest.numberInn()),
-
                 () -> assertThat(user.getSnils())
                         .isEqualTo(userRequest.snils()),
 
@@ -102,7 +97,22 @@ public class UserMapperTest {
                         .isEqualTo(userRequest.login()),
 
                 () -> assertTrue(PasswordEncoderUtil.
-                        matches(userRequest.password(), user.getPassword()))
+                        matches(userRequest.password(), user.getPassword())),
+
+                () -> assertThat(user.getRequisites().getAccountNumber())
+                        .isEqualTo(userRequest.requisitesDTO().accountNumber()),
+
+                () -> assertThat(user.getRequisites().getNumberInn())
+                        .isEqualTo(userRequest.requisitesDTO().numberInn()),
+
+                () -> assertThat(user.getRequisites().getKbk())
+                        .isEqualTo(userRequest.requisitesDTO().kbk()),
+
+                () -> assertNull(user.getRequisites().getUser()),
+
+                () -> assertNull(user.getRequisites().getBic()),
+
+                () -> assertNull(user.getRequisites().getKpp())
         );
     }
 

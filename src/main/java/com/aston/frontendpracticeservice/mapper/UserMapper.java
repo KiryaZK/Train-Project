@@ -19,6 +19,9 @@ public interface UserMapper {
 
     List<UserResponse> toUserResponseList(List<User> users);
 
+    @Mapping(source = "requisitesDTO.kbk", target = "requisites.kbk")
+    @Mapping(source = "requisitesDTO.numberInn", target = "requisites.numberInn")
+    @Mapping(source = "requisitesDTO.accountNumber", target = "requisites.accountNumber")
     @Mapping(source = "password", target = "password", qualifiedByName = "getEncodePassword")
     void toUser(UserRequest userRequest, @MappingTarget User user);
 

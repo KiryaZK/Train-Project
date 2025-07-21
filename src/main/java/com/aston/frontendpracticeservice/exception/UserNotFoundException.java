@@ -1,10 +1,8 @@
 package com.aston.frontendpracticeservice.exception;
 
+import static com.aston.frontendpracticeservice.utils.constants.ExceptionMessage.USER_NOT_FOUND_MESSAGE;
+
 public class UserNotFoundException extends RuntimeException {
-
-    public static final String USER_NOT_FOUND_MESSAGE = "User not found";
-
-    public static final String USERS_NOT_FOUND_MESSAGE = "Users not found";
 
     public UserNotFoundException() {
         super(USER_NOT_FOUND_MESSAGE);

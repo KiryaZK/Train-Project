@@ -1,9 +1,9 @@
-package com.aston.frontendpracticeservice.utils;
+package com.aston.frontendpracticeservice.utils.constants;
 
 /**
  * Константы для примерных значений
  */
-public final class ValuesConst {
+public final class ExampleValues {
 
     public static final String EXAMPLE_USER_ID = "8e9774e8-1546-4d9d-ae97-e9c3978ec7e1";
     public static final String EXAMPLE_FIRSTNAME = "Иван";
@@ -15,8 +15,10 @@ public final class ValuesConst {
     public static final String EXAMPLE_LOGIN = "ivan_petrov";
     public static final String EXAMPLE_PASSWORD = "password1";
     public static final String EXAMPLE_ROLE = "USER";
+    public static final String EXAMPLE_ACCOUNT_NUMBER = "64121755715063391863";
+    public static final String EXAMPLE_KBK = "32378666015365049480";
 
-    private ValuesConst() {}
+    private ExampleValues() {}
 
 
 }

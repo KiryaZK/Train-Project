@@ -1,6 +1,7 @@
 package com.aston.frontendpracticeservice.service.implementation;
 
 import com.aston.frontendpracticeservice.domain.entity.User;
+import com.aston.frontendpracticeservice.dto.projection.UserAccountDetailsView;
 import com.aston.frontendpracticeservice.dto.user.UserRequest;
 import com.aston.frontendpracticeservice.dto.user.UserResponse;
 import com.aston.frontendpracticeservice.exception.UserNotFoundException;
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-import static com.aston.frontendpracticeservice.exception.UserNotFoundException.USERS_NOT_FOUND_MESSAGE;
+import static com.aston.frontendpracticeservice.utils.constants.ExceptionMessage.USERS_NOT_FOUND_MESSAGE;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +47,7 @@ public class UserServiceImpl implements UserService {
     public void createNewUser(UserRequest userDTO) {
         User user = new User();
         userMapper.toUser(userDTO, user);
+        user.getRequisites().setUser(user);
         userRepository.save(user);
     }
 
@@ -66,5 +68,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(UUID id) {
         userRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public UserAccountDetailsView getUserViewById(UUID id) {
+        return userRepository.findUserView(id)
+                .orElseThrow(UserNotFoundException::new);
     }
 }

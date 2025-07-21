@@ -1,6 +1,7 @@
 package com.aston.frontendpracticeservice.service;
 
 import com.aston.frontendpracticeservice.domain.entity.User;
+import com.aston.frontendpracticeservice.dto.projection.UserAccountDetailsView;
 import com.aston.frontendpracticeservice.dto.user.UserRequest;
 import com.aston.frontendpracticeservice.dto.user.UserResponse;
 import com.aston.frontendpracticeservice.exception.UserNotFoundException;
@@ -54,4 +55,12 @@ public interface UserService {
      * @param id - UUID пользователя
      */
     void deleteById(UUID id);
+
+    /**
+     * Метод для получения имени пользователя, его расчетного счета и кбк
+     * по его ID
+     * @param id - UUID пользователя
+     * @return Проекция с именем, расчетным счетом и кбк пользователя
+     */
+    UserAccountDetailsView getUserViewById(UUID id);
 }

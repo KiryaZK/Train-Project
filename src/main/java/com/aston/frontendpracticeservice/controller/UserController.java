@@ -1,9 +1,11 @@
 package com.aston.frontendpracticeservice.controller;
 
+import com.aston.frontendpracticeservice.dto.projection.UserAccountDetailsView;
 import com.aston.frontendpracticeservice.dto.user.UserRequest;
 import com.aston.frontendpracticeservice.dto.user.UserResponse;
 import com.aston.frontendpracticeservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,27 +23,28 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/puppet-lab")
+@RequestMapping("/api/v1/puppet-lab/users")
 @RequiredArgsConstructor
+@Tag(name = "Puppet-lab", description = "API для работы с пользователями")
 public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/users")
+    @GetMapping
     @Operation(summary = "Получение всех пользователей",
             description = "Метод позволяет получить список всех пользователей")
     public List<UserResponse> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     @Operation(summary = "Получение пользователя по его ID",
             description = "Метод позволяет получить пользователя по его ID")
     public UserResponse getUserById(@PathVariable UUID id) {
         return userService.getById(id);
     }
 
-    @PostMapping("/users")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Создание нового пользователя",
             description = "Метод позволяет создать нового пользователя")
@@ -49,7 +52,8 @@ public class UserController {
         userService.createNewUser(userDTO);
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Обновить пользователя",
             description = "Метод позволяет обновить существующего пользователя")
     public void updateUser(@PathVariable UUID id,
@@ -57,10 +61,21 @@ public class UserController {
         userService.updateUser(id, userDTO);
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Удалить пользователя по его ID",
             description = "Метод позволяет удалить пользователя по его ID")
     public void deleteUserById(@PathVariable UUID id) {
         userService.deleteById(id);
+    }
+
+    @GetMapping("/{id}/account-details")
+    @Operation(
+            summary = "Получение имени, расчетного счета и кбк пользователя" +
+                    " по его ID",
+            description = "Метод позволяет получить имя пользователя, " +
+                    "его расчетный счет и кбк по его ID")
+    public UserAccountDetailsView getUserViewById(@PathVariable UUID id) {
+        return userService.getUserViewById(id);
     }
 }
