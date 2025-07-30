@@ -1,16 +1,16 @@
 package com.aston.frontendpracticeservice.utils;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Утильный класс для работы с объектом типа PasswordEncoder.
  */
-public final class PasswordEncoderUtil {
+@UtilityClass
+public class PasswordEncoderUtil {
 
     private static final PasswordEncoder encoder = new BCryptPasswordEncoder();
-
-    private PasswordEncoderUtil() {}
 
     public static String encodePassword(String password) {
         return encoder.encode(password);
