@@ -4,7 +4,7 @@ import com.aston.frontendpracticeservice.domain.entity.User;
 import com.aston.frontendpracticeservice.dto.projection.UserAccountDetailsView;
 import com.aston.frontendpracticeservice.dto.user.UserRequest;
 import com.aston.frontendpracticeservice.dto.user.UserResponse;
-import com.aston.frontendpracticeservice.exception.UserNotFoundException;
+import com.aston.frontendpracticeservice.exception.business.UserNotFoundException;
 
 import java.util.List;
 import java.util.UUID;
