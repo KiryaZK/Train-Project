@@ -9,6 +9,9 @@ import com.aston.frontendpracticeservice.mapper.UserMapper;
 import com.aston.frontendpracticeservice.repository.UserRepository;
 import com.aston.frontendpracticeservice.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +38,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserResponseList(users);
     }
 
+    @Cacheable(value = "users", key = "#id")
     @Transactional(readOnly = true)
     @Override
     public UserResponse getById(UUID id) {
@@ -51,11 +55,15 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @CachePut(value = "users", key = "#id")
     @Transactional
     @Override
-    public void updateUser(UUID id, UserRequest userDTO) {
+    public UserResponse updateUser(UUID id, UserRequest userDTO) {
         var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         userMapper.toUser(userDTO, user);
+        userRepository.saveAndFlush(user);
+
+        return userMapper.toUserResponse(user);
     }
 
     @Transactional(readOnly = true)
@@ -64,6 +72,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByLogin(login).orElseThrow(UserNotFoundException::new);
     }
 
+    @CacheEvict(value = "users", key = "#id")
     @Transactional
     @Override
     public void deleteById(UUID id) {

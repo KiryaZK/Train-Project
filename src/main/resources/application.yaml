@@ -1,18 +1,34 @@
 spring:
   application:
     name: puppet-lab
+
   config:
     import: optional:file:./env/.env[.properties]
+
   datasource:
     url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/puppet_db}
     username: ${POSTGRES_USER:postgres}
     password: ${POSTGRES_PASSWORD:pass123}
+
   jpa:
     properties.hibernate:
       show_sql: true
       format_sql: true
       hbm2ddl.auto: validate
     open-in-view: false
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+
+  cache:
+    type: redis
+
+  caches:
+    users-cache-name: users
+    users-ttl: 30m
 
 logging:
   level:

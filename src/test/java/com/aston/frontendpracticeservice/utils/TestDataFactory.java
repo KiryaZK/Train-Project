@@ -2,7 +2,6 @@ package com.aston.frontendpracticeservice.utils;
 
 import com.aston.frontendpracticeservice.domain.entity.Requisites;
 import com.aston.frontendpracticeservice.domain.entity.User;
-import com.aston.frontendpracticeservice.dto.projection.UserAccountDetailsView;
 import com.aston.frontendpracticeservice.dto.requisites.RequisitesDTO;
 import com.aston.frontendpracticeservice.dto.user.UserRequest;
 import com.aston.frontendpracticeservice.dto.user.UserResponse;
@@ -44,7 +43,7 @@ public final class TestDataFactory {
                 .lastname(LAST_NAME)
                 .birthDate(LocalDate.parse(BIRTH_DATE))
                 .snils(isExists ? SNILS : SNILS_NOT_EXIST)
-                .passportNumber(PASSPORT_NUMBER_NOT_EXIST)
+                .passportNumber(isExists ? PASSPORT_NUMBER : PASSPORT_NUMBER_NOT_EXIST)
                 .roles(ROLES)
                 .login(isExists ? LOGIN : LOGIN_NOT_EXIST)
                 .password(PasswordEncoderUtil

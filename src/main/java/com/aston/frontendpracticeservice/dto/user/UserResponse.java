@@ -55,5 +55,4 @@ public record UserResponse (
     @NotEmpty(message = NOT_BLANK_MESSAGE)
     @Schema(description = DESCRIPTION_LOGIN, example = EXAMPLE_ROLE)
     Set<Role> roles
-    )
-{}
+) {}

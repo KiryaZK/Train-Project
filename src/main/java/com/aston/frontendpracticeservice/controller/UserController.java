@@ -53,12 +53,11 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Обновить пользователя",
             description = "Метод позволяет обновить существующего пользователя")
-    public void updateUser(@PathVariable UUID id,
+    public UserResponse updateUser(@PathVariable UUID id,
                            @RequestBody @Valid UserRequest userDTO) {
-        userService.updateUser(id, userDTO);
+        return userService.updateUser(id, userDTO);
     }
 
     @DeleteMapping("/{id}")

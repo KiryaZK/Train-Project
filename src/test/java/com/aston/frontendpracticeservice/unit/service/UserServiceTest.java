@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cache.Cache;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,6 +55,9 @@ public class UserServiceTest {
 
     @Mock
     private UserMapper userMapper;
+
+    @Mock
+    private Cache cache;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -161,10 +165,14 @@ public class UserServiceTest {
         when(userRepository.findById(idExist))
                 .thenReturn(Optional.of(userExist));
         doNothing().when(userMapper).toUser(userRequest, userExist);
+        when(userRepository.saveAndFlush(userExist)).thenReturn(userExist);
+        when(userMapper.toUserResponse(userExist)).thenReturn(userResponse);
+
         userService.updateUser(idExist, userRequest);
 
         verify(userRepository).findById(idExist);
         verify(userMapper).toUser(userRequest, userExist);
+        verify(userMapper).toUserResponse(userExist);
     }
 
     @Test
