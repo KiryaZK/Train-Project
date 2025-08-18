@@ -100,11 +100,15 @@ class UserControllerIT extends IntegrationTestBase {
     @DisplayName("PUT /users/{id} - When input data is valid - expect updated User")
     void updateUser_ShouldReturnSuccess() throws Exception {
         var userRequest = TestDataFactory.getUserRequest(true);
+        var userResponse = TestDataFactory.getUserResponse();
         var request = put(PUT_UPDATE_USER_URL, USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRequest));
 
-        mvc.perform(request).andExpect(status().isNoContent());
+        mvc.perform(request).andExpectAll(
+                status().isOk(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                content().json(objectMapper.writeValueAsString(userResponse)));
     }
 
     @Test

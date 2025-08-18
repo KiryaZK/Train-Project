@@ -44,11 +44,13 @@ public interface UserService {
 
     /**
      * Метод для обновления данных существующего пользователя
-     * @param id - UUID пользователя
+     *
+     * @param id      - UUID пользователя
      * @param userDTO - DTO с новыми данными пользователя
+     * @return DTO с информацией о пользователе
      * @throws UserNotFoundException если пользователь не найден по id
      */
-    void updateUser(UUID id, UserRequest userDTO);
+    UserResponse updateUser(UUID id, UserRequest userDTO);
 
     /**
      * Метод для удаления пользователя по его ID
