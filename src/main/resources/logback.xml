@@ -1,0 +1,12 @@
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>localhost:5044</destination><!-- Send logs to logstash -->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+
+    <logger name="com.aston.frontendpracticeservice" level="DEBUG">
+        <appender-ref ref="logstash" />
+    </logger>
+</configuration>
