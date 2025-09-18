@@ -79,7 +79,7 @@ class UserControllerIT extends IntegrationTestBase {
 
         mvc.perform(request)
                 .andExpectAll(
-                        status().isNotFound(),
+                        status().isBadRequest(),
                         content().contentType(MediaType.APPLICATION_JSON),
                         jsonPath("$.message").value(USER_NOT_FOUND_MESSAGE)
                 );
@@ -124,7 +124,10 @@ class UserControllerIT extends IntegrationTestBase {
     void deleteUserById_ShouldThrowException() throws Exception {
         var request = delete(DELETE_USER_BY_ID, "fail");
 
-        mvc.perform(request).andExpect(status().is4xxClientError());
+        mvc.perform(request).andExpectAll(
+                status().isBadRequest(),
+                content().contentType(MediaType.APPLICATION_JSON)
+        );
     }
 
     @Test
@@ -151,7 +154,7 @@ class UserControllerIT extends IntegrationTestBase {
 
         mvc.perform(request)
                 .andExpectAll(
-                        status().isNotFound(),
+                        status().isBadRequest(),
                         content().contentType(MediaType.APPLICATION_JSON),
                         jsonPath("$.message").value(USER_NOT_FOUND_MESSAGE)
                 );
@@ -163,6 +166,9 @@ class UserControllerIT extends IntegrationTestBase {
         var request = get(GET_USER_VIEW_URL, "fail")
                 .contentType(MediaType.APPLICATION_JSON);
 
-        mvc.perform(request).andExpect(status().is4xxClientError());
+        mvc.perform(request).andExpectAll(
+                status().isBadRequest(),
+                content().contentType(MediaType.APPLICATION_JSON)
+        );
     }
 }

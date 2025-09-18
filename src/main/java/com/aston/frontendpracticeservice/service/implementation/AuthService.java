@@ -3,7 +3,7 @@ package com.aston.frontendpracticeservice.service.implementation;
 import com.aston.frontendpracticeservice.domain.entity.User;
 import com.aston.frontendpracticeservice.domain.request.AuthRequest;
 import com.aston.frontendpracticeservice.domain.response.JwtResponse;
-import com.aston.frontendpracticeservice.exception.AuthException;
+import com.aston.frontendpracticeservice.exception.auth.AuthException;
 import com.aston.frontendpracticeservice.service.UserService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
