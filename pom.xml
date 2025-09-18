@@ -25,6 +25,7 @@
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <spring-boot-starter-data-redis.version>3.5.3</spring-boot-starter-data-redis.version>
         <testcontainers-redis.version>2.2.2</testcontainers-redis.version>
+        <logstash-logback-encoder.version>4.11</logstash-logback-encoder.version>
     </properties>
     <dependencies>
         <dependency>
@@ -124,6 +125,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>${logstash-logback-encoder.version}</version>
         </dependency>
     </dependencies>
 

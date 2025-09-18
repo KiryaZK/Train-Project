@@ -1,7 +1,8 @@
 package com.aston.frontendpracticeservice.integration.cache;
 
 import com.aston.frontendpracticeservice.domain.entity.User;
-import com.aston.frontendpracticeservice.exception.UserNotFoundException;
+
+import com.aston.frontendpracticeservice.exception.business.UserNotFoundException;
 import com.aston.frontendpracticeservice.integration.IntegrationTestBase;
 import com.aston.frontendpracticeservice.repository.UserRepository;
 import com.aston.frontendpracticeservice.service.UserService;

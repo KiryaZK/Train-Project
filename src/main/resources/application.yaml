@@ -30,11 +30,6 @@ spring:
     users-cache-name: users
     users-ttl: 30m
 
-logging:
-  level:
-    com.aston.frontendpracticeservice: debug
-
-
 jwt.secret: ${MY_JWT}
 
 auth.default_login: admin
